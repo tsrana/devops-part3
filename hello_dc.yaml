@@ -1,0 +1,39 @@
+kind: "DeploymentConfig"
+apiVersion: "v1"
+metadata:
+  name: "hello"
+  labels:
+    app: hello
+spec:
+  template: 
+    metadata:
+      labels:
+        name: "hello"
+        app: hello
+    spec:
+      containers:
+        - name: "hello"
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080
+              protocol: "TCP"
+          env:
+            - name: RUN_ENV
+              value: OpenShift
+      restartPolicy: Always
+  replicas: 1 
+  triggers:
+    - type: "ConfigChange" 
+    - type: "ImageChange" 
+      imageChangeParams:
+        automatic: true
+        containerNames:
+          - "hello"
+        from:
+          kind: "ImageStreamTag"
+          name: "hello:latest"
+  strategy: 
+    type: "Rolling"
+  paused: false 
+  revisionHistoryLimit: 2 
+  minReadySeconds: 0 
