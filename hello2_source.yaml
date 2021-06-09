@@ -1,24 +1,24 @@
 apiVersion: v1
 kind: Template
 metadata:
-  name: hello1-template
+  name: hello2-template
 objects:
 - kind: ImageStream
   apiVersion: v1
   metadata:
     annotations:
     labels:
-      app: hello1
-    name: hello1
+      app: hello2
+    name: hello2
   spec:
     lookupPolicy:
       local: false
 - kind: "BuildConfig"
   apiVersion: "v1"
   metadata:
-    name: "hello1" 
+    name: "hello2" 
     labels:
-      app: hello1
+      app: hello2
   spec:
     runPolicy: "Serial" 
     triggers: 
@@ -43,22 +43,22 @@ objects:
     output: 
       to:
         kind: "ImageStreamTag"
-        name: "hello1:latest"
+        name: "hello2:latest"
 - kind: "DeploymentConfig"
   apiVersion: "v1"
   metadata:
-    name: "hello1"
+    name: "hello2"
     labels:
-      app: hello1
+      app: hello2
   spec:
     template: 
       metadata:
         labels:
-          name: "hello1"
-          app: hello1
+          name: "hello2"
+          app: hello2
       spec:
         containers:
-          - name: "hello1"
+          - name: "hello2"
             imagePullPolicy: Always
             ports:
               - containerPort: 8080
@@ -74,10 +74,10 @@ objects:
         imageChangeParams:
           automatic: true
           containerNames:
-            - "hello1"
+            - "hello2"
           from:
             kind: "ImageStreamTag"
-            name: "hello1:latest"
+            name: "hello2:latest"
     strategy: 
       type: "Rolling"
     paused: false 
@@ -87,9 +87,9 @@ objects:
   apiVersion: v1
   metadata:
     annotations:
-    name: hello1
+    name: hello2
     labels:
-      app: hello1
+      app: hello2
   spec:
     ports:
     - name: 8080-tcp
@@ -97,20 +97,20 @@ objects:
       port: 8080
       targetPort: 8080
     selector:
-      app: hello1
+      app: hello2
     type: ClusterIP
     sessionAffinity: None
 - kind: Route
   apiVersion: route.openshift.io/v1
   metadata:
-    name: hello1
+    name: hello2
     labels:
-      app: hello1
+      app: hello2
     annotations:
   spec:
     to:
       kind: Service
-      name: hello1
+      name: hello2
       weight: 100
     port:
       targetPort: 8080-tcp
